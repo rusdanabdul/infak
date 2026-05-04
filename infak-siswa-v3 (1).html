@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Infak Siswa — Sistem Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  /* Blue-White-Pink palette */
+  --navy:      #1A2E4A;
+  --navy-mid:  #243B5A;
+  --blue:      #2B6CB0;
+  --blue-mid:  #3B82C4;
+  --blue-soft: #5BA3D9;
+  --blue-pale: #DBEAFE;
+  --blue-mist: #EFF6FF;
+  --pink:      #D63384;
+  --pink-mid:  #E05C9A;
+  --pink-soft: #F4A8C8;
+  --pink-pale: #FCE7F3;
+  --pink-mist: #FDF2F8;
+  --rose:      #E63946;
+  --rose-pale: #FEE2E2;
+  --white:     #FFFFFF;
+  --off-white: #F8FAFC;
+  --slate-50:  #F8FAFC;
+  --slate-100: #F1F5F9;
+  --slate-200: #E2E8F0;
+  --slate-300: #CBD5E1;
+  --slate-400: #94A3B8;
+  --slate-500: #64748B;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1E293B;
+  --gold:      #D4A017;
+  --gold-pale: #FEF3C7;
+  --emerald:   #059669;
+  --em-pale:   #D1FAE5;
+  --amber:     #D97706;
+  --am-pale:   #FEF3C7;
+  --shadow-xs: 0 1px 3px rgba(26,46,74,.08);
+  --shadow-sm: 0 2px 8px rgba(26,46,74,.10);
+  --shadow-md: 0 6px 20px rgba(26,46,74,.12);
+  --shadow-lg: 0 16px 48px rgba(26,46,74,.16);
+  --r-xs:4px; --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px;
+  --sb-w:270px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Sora',sans-serif;background:var(--slate-100);color:var(--slate-800)}
+button,input,select,textarea{font-family:'Sora',sans-serif}
+button{cursor:pointer;border:none;background:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--slate-300);border-radius:4px}
+
+/* SHELL */
+.shell{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sb-w);position:fixed;top:0;left:0;bottom:0;
+  background:var(--navy);display:flex;flex-direction:column;z-index:50;
+  overflow:hidden;
+}
+.sb-top{
+  background:linear-gradient(160deg,var(--blue) 0%,var(--navy) 100%);
+  padding:22px 20px 18px;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.sb-logo-row{display:flex;align-items:center;gap:11px}
+.sb-logo{
+  width:40px;height:40px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,var(--pink),var(--blue-soft));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;box-shadow:0 2px 10px rgba(0,0,0,.25);flex-shrink:0;
+}
+.sb-brand h1{font-family:'Crimson Pro',serif;font-size:18px;font-weight:600;color:#fff;line-height:1.2}
+.sb-brand p{font-size:11px;color:rgba(255,255,255,.5);margin-top:3px}
+.sb-school{
+  margin-top:14px;padding:9px 12px;border-radius:var(--r-sm);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+}
+.sb-school-label{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.8px;text-transform:uppercase}
+.sb-school-name{font-size:13px;color:rgba(255,255,255,.9);font-weight:500;margin-top:2px}
+
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
+.sb-sec{font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+  color:rgba(255,255,255,.25);padding:0 10px;margin:10px 0 5px}
+.nav-btn{
+  display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:var(--r-sm);
+  width:100%;color:rgba(255,255,255,.55);font-size:13px;
+  transition:all .18s;margin-bottom:1px;text-align:left;
+}
+.nav-btn .ni{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  background:rgba(255,255,255,.06);flex-shrink:0;transition:all .18s;
+}
+.nav-btn:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.nav-btn.active{background:linear-gradient(90deg,rgba(43,108,176,.6),rgba(43,108,176,.2));color:#fff}
+.nav-btn.active .ni{background:var(--blue);box-shadow:0 2px 8px rgba(43,108,176,.5)}
+.nav-btn.pink-active{background:linear-gradient(90deg,rgba(214,51,132,.5),rgba(214,51,132,.15));color:#fff}
+.nav-btn.pink-active .ni{background:var(--pink);box-shadow:0 2px 8px rgba(214,51,132,.4)}
+
+.sb-divider{height:1px;background:rgba(255,255,255,.06);margin:8px 4px}
+
+/* Kelas list */
+.kelas-scroll{max-height:300px;overflow-y:auto}
+.kelas-item{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r-sm);
+  cursor:pointer;transition:all .15s;color:rgba(255,255,255,.5);font-size:12px;margin-bottom:1px;
+}
+.kelas-item:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.8)}
+.kelas-item.active{background:rgba(244,168,200,.12);color:var(--pink-soft);font-weight:500}
+.ki-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.2);flex-shrink:0}
+.kelas-item.active .ki-dot{background:var(--pink-soft)}
+.ki-name{flex:1;font-size:12px}
+.ki-cnt{font-size:10px;background:rgba(255,255,255,.07);padding:1px 6px;border-radius:20px;color:rgba(255,255,255,.35)}
+.kelas-item.active .ki-cnt{background:rgba(244,168,200,.15);color:var(--pink-soft)}
+.ki-edit{font-size:11px;opacity:0;padding:2px;transition:opacity .15s}
+.kelas-item:hover .ki-edit{opacity:.5}
+
+.add-kelas-btn{
+  display:flex;align-items:center;gap:7px;width:100%;
+  padding:7px 10px;border-radius:var(--r-sm);margin-top:4px;
+  color:rgba(255,255,255,.3);font-size:12px;
+  border:1px dashed rgba(255,255,255,.15);transition:all .18s;
+}
+.add-kelas-btn:hover{color:var(--pink-soft);border-color:rgba(244,168,200,.4);background:rgba(244,168,200,.05)}
+
+.sb-foot{padding:12px 16px;border-top:1px solid rgba(255,255,255,.06)}
+.sb-foot-year{font-size:11px;color:rgba(255,255,255,.3)}
+.sb-foot-year b{color:var(--blue-soft)}
+
+/* MAIN */
+.main{margin-left:var(--sb-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* TOPBAR */
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--slate-200);
+  padding:0 30px;height:62px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:40;box-shadow:var(--shadow-xs);
+}
+.tb-left h2{font-family:'Crimson Pro',serif;font-size:20px;font-weight:600;color:var(--slate-800)}
+.tb-left p{font-size:11px;color:var(--slate-500);margin-top:1px}
+.tb-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-box{
+  display:flex;align-items:center;gap:7px;
+  background:var(--slate-100);border:1.5px solid var(--slate-200);
+  border-radius:var(--r-md);padding:0 12px;height:36px;transition:all .18s;
+}
+.search-box:focus-within{border-color:var(--blue);background:white}
+.search-box input{border:none;background:none;outline:none;font-size:13px;color:var(--slate-700);width:170px}
+.search-box input::placeholder{color:var(--slate-400)}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:0 14px;height:36px;border-radius:var(--r-md);
+  font-size:12px;font-weight:500;transition:all .2s;white-space:nowrap;
+}
+.btn-blue{background:var(--blue);color:#fff;box-shadow:0 2px 6px rgba(43,108,176,.3)}
+.btn-blue:hover{background:var(--blue-mid);box-shadow:0 4px 14px rgba(43,108,176,.4);transform:translateY(-1px)}
+.btn-pink{background:var(--pink);color:#fff;box-shadow:0 2px 6px rgba(214,51,132,.3)}
+.btn-pink:hover{background:var(--pink-mid);box-shadow:0 4px 14px rgba(214,51,132,.4);transform:translateY(-1px)}
+.btn-ghost{background:none;border:1.5px solid var(--slate-200);color:var(--slate-600)}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.btn-danger{background:var(--rose-pale);color:var(--rose);border:1.5px solid #FCA5A5}
+.btn-danger:hover{background:var(--rose);color:#fff}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#B88A10);color:#fff;box-shadow:0 2px 6px rgba(212,160,23,.3)}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(212,160,23,.4)}
+.btn-sm{height:30px;padding:0 11px;font-size:11px}
+.btn-xs{height:26px;padding:0 9px;font-size:11px;border-radius:var(--r-sm)}
+.icon-btn{width:30px;height:30px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--slate-400);transition:all .15s}
+.icon-btn:hover{background:var(--slate-100);color:var(--slate-700)}
+.icon-btn.del:hover{background:var(--rose-pale);color:var(--rose)}
+
+/* CONTENT */
+.content{padding:24px 30px;flex:1}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{
+  background:var(--white);border-radius:var(--r-lg);padding:18px;
+  border:1px solid var(--slate-200);position:relative;overflow:hidden;transition:all .2s;
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.sc-blue::before{background:linear-gradient(90deg,var(--blue),var(--blue-soft))}
+.sc-pink::before{background:linear-gradient(90deg,var(--pink),var(--pink-soft))}
+.sc-gold::before{background:linear-gradient(90deg,var(--gold),#F5C84A)}
+.sc-em::before{background:linear-gradient(90deg,var(--emerald),#34D399)}
+.stat-ic{width:36px;height:36px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px}
+.sc-blue .stat-ic{background:var(--blue-mist)}
+.sc-pink .stat-ic{background:var(--pink-mist)}
+.sc-gold .stat-ic{background:var(--gold-pale)}
+.sc-em .stat-ic{background:var(--em-pale)}
+.stat-lbl{font-size:11px;color:var(--slate-500);font-weight:400;margin-bottom:4px}
+.stat-num{font-family:'Crimson Pro',serif;font-size:24px;font-weight:600;color:var(--slate-800);line-height:1}
+.stat-sub{font-size:10px;color:var(--slate-400);margin-top:6px}
+.stat-bar{height:3px;background:var(--slate-100);border-radius:2px;margin-top:8px;overflow:hidden}
+.stat-bar-fill{height:100%;border-radius:2px;transition:width .5s}
+.sc-blue .stat-bar-fill{background:var(--blue)}
+.sc-pink .stat-bar-fill{background:var(--pink)}
+.sc-gold .stat-bar-fill{background:var(--gold)}
+
+/* PERIOD TABS */
+.period-tabs-wrap{
+  display:flex;align-items:center;gap:10px;
+  background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);
+  padding:12px 18px;margin-bottom:16px;flex-wrap:wrap;
+}
+.period-label{font-size:12px;font-weight:500;color:var(--slate-500)}
+.period-tabs{display:flex;gap:2px;background:var(--slate-100);border-radius:var(--r-md);padding:3px}
+.ptab{
+  padding:6px 14px;border-radius:var(--r-sm);font-size:12px;font-weight:400;
+  color:var(--slate-500);transition:all .18s;
+}
+.ptab.active{background:var(--white);color:var(--blue);font-weight:600;box-shadow:var(--shadow-xs)}
+.ptab:hover:not(.active){color:var(--slate-700)}
+.period-info{
+  font-size:11px;color:var(--slate-500);
+  background:var(--blue-mist);padding:4px 10px;border-radius:20px;border:1px solid var(--blue-pale);
+}
+
+/* FILTER BAR */
+.filter-bar{
+  background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);
+  padding:12px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.fl{font-size:11px;font-weight:500;color:var(--slate-500)}
+.f-select{
+  height:32px;border:1.5px solid var(--slate-200);border-radius:var(--r-sm);
+  padding:0 9px;font-size:12px;color:var(--slate-700);background:var(--slate-50);
+  outline:none;transition:border-color .18s;cursor:pointer;
+}
+.f-select:focus{border-color:var(--blue)}
+.f-sep{width:1px;height:20px;background:var(--slate-200)}
+.filter-tag{
+  display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;
+  font-size:11px;font-weight:500;border:1.5px solid var(--slate-200);
+  color:var(--slate-500);background:var(--slate-50);cursor:pointer;transition:all .15s;
+}
+.filter-tag.active{background:var(--pink-pale);color:var(--pink);border-color:var(--pink-soft)}
+.filter-tag:hover:not(.active){border-color:var(--blue);color:var(--blue)}
+
+/* TABLE */
+.table-card{background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);overflow:hidden}
+.tc-head{padding:16px 20px;border-bottom:1px solid var(--slate-100);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.tc-head h3{font-family:'Crimson Pro',serif;font-size:17px;font-weight:600;color:var(--slate-800)}
+.tc-head-right{display:flex;gap:7px;align-items:center}
+.t-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{
+  background:var(--slate-50);font-size:10px;font-weight:600;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--slate-500);padding:10px 14px;
+  text-align:left;border-bottom:1px solid var(--slate-200);white-space:nowrap;
+}
+tbody tr{transition:background .12s}
+tbody tr:hover td{background:var(--blue-mist)}
+tbody tr:not(:last-child) td{border-bottom:1px solid var(--slate-100)}
+td{padding:12px 14px;font-size:13px;vertical-align:middle}
+.empty-st{text-align:center;padding:48px;color:var(--slate-400)}
+.empty-st .ei{font-size:38px;margin-bottom:10px;opacity:.4}
+.empty-st p{font-size:14px;color:var(--slate-500)}
+
+/* STUDENT CELLS */
+.stu-nm{font-weight:500;color:var(--slate-800);font-size:13px}
+.stu-sub{font-size:10px;color:var(--slate-400);margin-top:2px}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-kelas{background:var(--blue-pale);color:var(--blue)}
+.badge-kelas-x{background:var(--pink-pale);color:var(--pink)}
+
+/* MONTH CELLS */
+.months-wrap{display:flex;gap:3px;flex-wrap:wrap}
+.mc{
+  width:28px;height:28px;border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:600;cursor:pointer;
+  transition:all .15s;border:1.5px solid transparent;position:relative;
+}
+.mc.paid{background:var(--blue-pale);color:var(--blue);border-color:rgba(43,108,176,.2)}
+.mc.paid:hover{background:var(--blue);color:#fff;transform:scale(1.1)}
+.mc.unpaid{background:var(--slate-100);color:var(--slate-400);border-color:var(--slate-200)}
+.mc.unpaid:hover{background:var(--blue-mist);color:var(--blue);border-color:var(--blue-pale)}
+.mc.custom{border-color:var(--pink)!important}
+.mc.custom.paid{background:var(--pink-pale);color:var(--pink)}
+.mc.custom.paid:hover{background:var(--pink);color:#fff}
+.mc-label{font-size:9px;font-weight:600}
+.mc-check{font-size:12px}
+
+.total-v{font-family:'Crimson Pro',serif;font-size:15px;font-weight:600;color:var(--slate-800)}
+.total-s{font-size:10px;color:var(--slate-400);margin-top:2px}
+
+/* REKAP GRID */
+.rekap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.rekap-card{
+  background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);padding:18px;
+  transition:all .18s;position:relative;overflow:hidden;
+}
+.rekap-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.rekap-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--pink))}
+.rk-name{font-family:'Crimson Pro',serif;font-size:17px;font-weight:600;margin-bottom:2px}
+.rk-wali{font-size:11px;color:var(--slate-400);margin-bottom:12px}
+.rk-row{display:flex;justify-content:space-between;margin-bottom:6px}
+.rk-lbl{font-size:11px;color:var(--slate-500)}
+.rk-val{font-size:12px;font-weight:600;color:var(--slate-700)}
+.rk-val.teal{color:var(--blue)}
+.rk-bar{height:4px;background:var(--slate-100);border-radius:2px;margin-top:10px;overflow:hidden}
+.rk-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--blue),var(--blue-soft));transition:width .5s}
+.rk-pct{font-size:10px;color:var(--slate-400);margin-top:4px}
+.rk-bulan{display:flex;gap:2px;flex-wrap:wrap;margin-top:8px}
+.rk-m{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700}
+.rk-m.full{background:var(--blue-pale);color:var(--blue)}
+.rk-m.partial{background:var(--am-pale);color:var(--amber)}
+.rk-m.empty{background:var(--slate-100);color:var(--slate-300)}
+
+/* PERIOD DETAIL */
+.period-badge{
+  display:inline-flex;align-items:center;gap:4px;padding:2px 8px;
+  border-radius:20px;font-size:10px;font-weight:600;margin-right:4px;
+}
+.pb-1{background:var(--blue-pale);color:var(--blue)}
+.pb-2{background:var(--pink-pale);color:var(--pink)}
+.pb-3{background:var(--gold-pale);color:var(--gold)}
+
+/* DATABASE PAGE */
+.db-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.db-card{
+  background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);padding:24px;
+  text-align:center;transition:all .18s;cursor:pointer;
+}
+.db-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--blue)}
+.db-card .db-ic{font-size:36px;margin-bottom:12px}
+.db-card h3{font-family:'Crimson Pro',serif;font-size:17px;font-weight:600;margin-bottom:6px}
+.db-card p{font-size:12px;color:var(--slate-500);line-height:1.5}
+.db-card.download{border-top:3px solid var(--blue)}
+.db-card.upload{border-top:3px solid var(--pink)}
+.db-info{
+  background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);padding:20px;margin-bottom:16px;
+}
+.db-info h3{font-family:'Crimson Pro',serif;font-size:16px;margin-bottom:12px}
+.db-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.db-stat{text-align:center;padding:12px;border-radius:var(--r-md);background:var(--slate-50)}
+.db-stat-val{font-family:'Crimson Pro',serif;font-size:22px;font-weight:600;color:var(--blue)}
+.db-stat-lbl{font-size:11px;color:var(--slate-500);margin-top:2px}
+.db-history{background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-lg);padding:20px}
+.db-history h3{font-family:'Crimson Pro',serif;font-size:16px;margin-bottom:12px}
+.db-log-item{
+  display:flex;align-items:center;gap:10px;padding:8px 0;
+  border-bottom:1px solid var(--slate-100);font-size:12px;
+}
+.db-log-item:last-child{border-bottom:none}
+.db-log-ic{width:28px;height:28px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.db-log-ic.d{background:var(--blue-mist)}
+.db-log-ic.u{background:var(--pink-mist)}
+.db-log-text{flex:1;color:var(--slate-600)}
+.db-log-time{font-size:10px;color:var(--slate-400)}
+
+/* MODAL */
+.backdrop{
+  position:fixed;inset:0;background:rgba(26,46,74,.5);backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;z-index:200;
+  opacity:0;pointer-events:none;transition:opacity .22s;
+}
+.backdrop.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--white);border-radius:var(--r-xl);box-shadow:var(--shadow-lg);
+  transform:translateY(14px) scale(.97);transition:transform .22s;
+  overflow:hidden;max-height:90vh;display:flex;flex-direction:column;
+}
+.backdrop.open .modal{transform:translateY(0) scale(1)}
+.m-sm{width:400px;max-width:92vw}
+.m-md{width:520px;max-width:92vw}
+.m-lg{width:680px;max-width:94vw}
+.m-head{
+  padding:22px 24px 0;display:flex;align-items:flex-start;justify-content:space-between;
+  flex-shrink:0;
+}
+.m-head h3{font-family:'Crimson Pro',serif;font-size:20px;font-weight:600}
+.m-head p{font-size:12px;color:var(--slate-500);margin-top:3px}
+.m-close{
+  width:30px;height:30px;border-radius:var(--r-sm);background:var(--slate-100);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  color:var(--slate-500);cursor:pointer;flex-shrink:0;margin-left:12px;transition:all .15s;
+}
+.m-close:hover{background:var(--rose-pale);color:var(--rose)}
+.m-body{padding:18px 24px;overflow-y:auto;flex:1}
+.m-foot{padding:14px 24px 22px;display:flex;gap:8px;justify-content:flex-end;border-top:1px solid var(--slate-100)}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--slate-600);letter-spacing:.3px;margin-bottom:5px}
+.fi{
+  width:100%;height:38px;border:1.5px solid var(--slate-200);border-radius:var(--r-md);
+  padding:0 12px;font-size:13px;color:var(--slate-800);background:var(--slate-50);
+  outline:none;transition:all .18s;
+}
+.fi:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(43,108,176,.08)}
+.fi-hint{font-size:10px;color:var(--slate-400);margin-top:4px}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fg-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.f-divider{border:none;border-top:1px solid var(--slate-100);margin:14px 0}
+
+/* Period config in kelas modal */
+.period-cfg{
+  background:var(--blue-mist);border:1px solid var(--blue-pale);border-radius:var(--r-md);
+  padding:12px 14px;margin-bottom:14px;
+}
+.period-cfg-title{font-size:11px;font-weight:600;color:var(--blue);margin-bottom:8px;letter-spacing:.3px}
+.period-row{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;align-items:center;margin-bottom:6px}
+.period-row label{font-size:11px;color:var(--slate-600);font-weight:500}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:22px;right:22px;
+  background:var(--slate-800);color:white;
+  padding:12px 16px;border-radius:var(--r-md);font-size:12px;
+  box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;
+  transform:translateY(60px);opacity:0;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;max-width:280px;
+}
+.toast.show{transform:translateY(0);opacity:1}
+.ti{font-size:14px}
+.toast.success .ti{color:#6EE7B7}
+.toast.error .ti{color:#FCA5A5}
+.toast.warn .ti{color:#FDE68A}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:2px dashed var(--slate-200);border-radius:var(--r-lg);padding:32px;text-align:center;
+  cursor:pointer;transition:all .18s;background:var(--slate-50);
+}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--pink);background:var(--pink-mist)}
+.upload-zone p{font-size:14px;color:var(--slate-500);margin-top:8px}
+.upload-zone small{font-size:11px;color:var(--slate-400)}
+#dbFileInput{display:none}
+
+/* PAGE */
+.page{display:none}
+.page.active{display:block}
+
+/* REKAP TABLE */
+.rekap-period-row td{background:linear-gradient(90deg,var(--blue-mist),transparent)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.anim{animation:fadeUp .3s ease forwards}
+
+/* RANGE FILTER */
+.range-filter{
+  background:var(--pink-mist);border:1px solid var(--pink-pale);border-radius:var(--r-md);
+  padding:10px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.range-filter label{font-size:11px;font-weight:500;color:var(--pink)}
+.tabs-sm{display:flex;gap:2px;background:var(--white);border:1px solid var(--slate-200);border-radius:var(--r-sm);padding:2px}
+.tab-sm{padding:5px 12px;border-radius:var(--r-xs);font-size:11px;font-weight:400;color:var(--slate-500);transition:all .15s}
+.tab-sm.active{background:var(--blue);color:white;font-weight:500}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ═══ SIDEBAR ═══ -->
+<aside class="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo-row">
+      <div class="sb-logo">🕌</div>
+      <div class="sb-brand">
+        <h1>Infak Siswa</h1>
+        <p>Sistem Pencatatan Digital</p>
+      </div>
+    </div>
+    <div class="sb-school">
+      <div class="sb-school-label">Sekolah</div>
+      <div class="sb-school-name" id="sbSchoolName">— belum diatur —</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-sec">Menu Utama</div>
+    <button class="nav-btn active" id="nb-dashboard" onclick="switchPage('dashboard')">
+      <span class="ni">📊</span>Dashboard
+    </button>
+    <button class="nav-btn" id="nb-semua" onclick="switchPage('semua')">
+      <span class="ni">👥</span>Semua Siswa
+    </button>
+    <button class="nav-btn" id="nb-rekap" onclick="switchPage('rekap')">
+      <span class="ni">📋</span>Rekap Per Kelas
+    </button>
+    <button class="nav-btn" id="nb-filter" onclick="switchPage('filter')">
+      <span class="ni">🔍</span>Cari Belum / Lunas
+    </button>
+    <button class="nav-btn" id="nb-database" onclick="switchPage('database')">
+      <span class="ni">🗄️</span>Database
+    </button>
+
+    <div class="sb-divider"></div>
+    <div class="sb-sec">Kelas</div>
+    <div class="kelas-scroll" id="kelasSidebar"></div>
+    <div style="padding:0 4px;margin-top:4px">
+      <button class="add-kelas-btn" onclick="openModal('mdKelas')">＋ Tambah Kelas</button>
+    </div>
+  </nav>
+
+  <div class="sb-foot">
+    <div class="sb-foot-year">Tahun Ajaran <b id="sbTahun">—</b></div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══ -->
+<main class="main">
+  <header class="topbar">
+    <div class="tb-left">
+      <h2 id="pageTitle">Dashboard</h2>
+      <p id="pageSubtitle">Ringkasan infak semua kelas</p>
+    </div>
+    <div class="tb-right">
+      <div class="search-box">
+        <span style="color:var(--slate-400);font-size:14px">🔍</span>
+        <input type="text" id="searchInput" placeholder="Cari siswa…" oninput="onSearch()">
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="downloadExcel()">📥 Excel</button>
+      <button class="btn btn-pink btn-sm" onclick="openModalSiswa()">＋ Siswa</button>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="rekap-grid" id="dashRekap"></div>
+    </div>
+
+    <!-- SEMUA SISWA -->
+    <div class="page" id="page-semua">
+      <div class="filter-bar" id="filterBar">
+        <span class="fl">Kelas:</span>
+        <select class="f-select" id="filterKelas" onchange="renderSemua()"><option value="">Semua</option></select>
+        <div class="f-sep"></div>
+        <span class="fl">Urut:</span>
+        <select class="f-select" id="filterSort" onchange="renderSemua()">
+          <option value="nama">Nama A–Z</option>
+          <option value="kelas">Kelas</option>
+          <option value="total-d">Total ↓</option>
+          <option value="total-a">Total ↑</option>
+        </select>
+        <div class="f-sep"></div>
+        <span class="fl">Periode:</span>
+        <div class="period-tabs" id="mainPeriodTabs"></div>
+        <div class="period-info" id="mainPeriodInfo"></div>
+      </div>
+
+      <div class="table-card anim">
+        <div class="tc-head">
+          <h3 id="tableTitle">Daftar Siswa</h3>
+          <div class="tc-head-right">
+            <button class="btn btn-ghost btn-sm" onclick="tandaiSemuaBulanIni()">⚡ Tandai Bulan Ini</button>
+            <button class="btn btn-ghost btn-sm" onclick="downloadExcel()">📥 Excel</button>
+          </div>
+        </div>
+        <div class="t-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:34px">#</th>
+              <th>Nama Siswa</th>
+              <th style="width:72px">Kelas</th>
+              <th>Pembayaran Bulanan <small style="font-weight:400;text-transform:none;letter-spacing:0">(klik = toggle · klik-kanan = isi nominal)</small></th>
+              <th style="text-align:right;width:110px">Total</th>
+              <th style="width:64px;text-align:center">Aksi</th>
+            </tr></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+          <div id="emptyState" class="empty-st" style="display:none">
+            <div class="ei">📋</div><p>Belum ada siswa</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REKAP PER KELAS -->
+    <div class="page" id="page-rekap">
+      <div class="rekap-grid" id="rekapGrid"></div>
+      <div class="table-card anim">
+        <div class="tc-head">
+          <h3>Rekap Detail Per Kelas</h3>
+          <button class="btn btn-ghost btn-sm" onclick="downloadExcelRekap()">📥 Rekap Excel</button>
+        </div>
+        <div class="t-wrap">
+          <table>
+            <thead><tr>
+              <th>Kelas</th><th>Periode</th><th>Tahun</th><th>Jml Siswa</th>
+              <th>Nominal/bln</th><th>Terkumpul</th><th>Potensi</th><th>%</th>
+            </tr></thead>
+            <tbody id="rekapBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILTER BELUM/LUNAS -->
+    <div class="page" id="page-filter">
+      <div class="filter-bar" style="flex-wrap:wrap;gap:10px">
+        <div class="tabs-sm">
+          <button class="tab-sm active" id="tab-belum" onclick="setFMode('belum')">Belum Bayar</button>
+          <button class="tab-sm" id="tab-lunas" onclick="setFMode('lunas')">Sudah Lunas</button>
+        </div>
+        <div class="f-sep"></div>
+        <span class="fl">Kelas:</span>
+        <select class="f-select" id="fKelas" onchange="renderFilter()"><option value="">Semua</option></select>
+        <div class="f-sep"></div>
+        <span class="fl">Periode:</span>
+        <select class="f-select" id="fPeriode" onchange="renderFilter()">
+          <option value="1">Periode 1</option>
+          <option value="2">Periode 2</option>
+          <option value="3">Periode 3</option>
+        </select>
+        <div class="f-sep"></div>
+        <span class="fl">Dari:</span>
+        <select class="f-select" id="fDari" onchange="renderFilter()"></select>
+        <span class="fl">s/d:</span>
+        <select class="f-select" id="fSampai" onchange="renderFilter()"></select>
+        <button class="btn btn-ghost btn-sm" onclick="downloadExcelFilter()">📥 Excel</button>
+      </div>
+
+      <div class="table-card anim">
+        <div class="tc-head">
+          <h3 id="filterTitle">Belum Bayar</h3>
+          <div id="filterCount" style="font-size:12px;color:var(--slate-400)"></div>
+        </div>
+        <div class="t-wrap">
+          <table>
+            <thead><tr>
+              <th>#</th><th>Nama Siswa</th><th>Kelas</th>
+              <th>Status Bulan (Rentang)</th>
+              <th style="text-align:right">Total Rentang</th>
+            </tr></thead>
+            <tbody id="filterBody"></tbody>
+          </table>
+          <div id="filterEmpty" class="empty-st" style="display:none">
+            <div class="ei">✅</div>
+            <p id="filterEmptyMsg">Semua sudah lunas!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DATABASE -->
+    <div class="page" id="page-database">
+      <div class="db-info">
+        <h3>Status Database</h3>
+        <div class="db-stat-row" id="dbStats"></div>
+      </div>
+      <div class="db-grid">
+        <div class="db-card download" onclick="downloadDB()">
+          <div class="db-ic">💾</div>
+          <h3>Download Database</h3>
+          <p>Unduh seluruh data (siswa, kelas, pembayaran) sebagai file JSON. Gunakan untuk backup atau pindah perangkat.</p>
+          <div style="margin-top:14px"><button class="btn btn-blue btn-sm" onclick="event.stopPropagation();downloadDB()">📥 Download .json</button></div>
+        </div>
+        <div class="db-card upload" onclick="triggerUpload()">
+          <div class="db-ic">📤</div>
+          <h3>Upload Database</h3>
+          <p>Pulihkan data dari file backup .json. Data saat ini akan digantikan sepenuhnya.</p>
+          <div style="margin-top:14px">
+            <button class="btn btn-pink btn-sm" onclick="event.stopPropagation();triggerUpload()">📁 Pilih File .json</button>
+            <input type="file" id="dbFileInput" accept=".json" onchange="uploadDB(event)">
+          </div>
+        </div>
+      </div>
+      <div class="db-history">
+        <h3>Riwayat Aktivitas Database</h3>
+        <div id="dbLog"></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /shell -->
+
+<!-- ═══ MODAL SISWA ═══ -->
+<div class="backdrop" id="mdSiswa">
+  <div class="modal m-md">
+    <div class="m-head">
+      <div><h3 id="mdSiswaTitle">Tambah Siswa</h3><p id="mdSiswaDesc">Isi data siswa baru</p></div>
+      <button class="m-close" onclick="closeModal('mdSiswa')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="fg-row">
+        <div class="fg"><label>NAMA LENGKAP *</label><input class="fi" id="inNama" placeholder="Nama siswa"></div>
+        <div class="fg"><label>NIS</label><input class="fi" id="inNIS" placeholder="Opsional"></div>
+      </div>
+      <div class="fg"><label>KELAS *</label><select class="fi" id="inKelas"></select></div>
+      <div class="fg">
+        <label>NOMINAL INFAK KHUSUS (opsional)</label>
+        <input class="fi" type="number" id="inNominalKhusus" placeholder="Kosong = ikuti nominal kelas">
+        <div class="fi-hint">Jika diisi, siswa ini punya tarif berbeda dari kelas</div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" onclick="closeModal('mdSiswa')">Batal</button>
+      <button class="btn btn-blue" onclick="simpanSiswa()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL KELAS ═══ -->
+<div class="backdrop" id="mdKelas">
+  <div class="modal m-lg">
+    <div class="m-head">
+      <div><h3 id="mdKelasTitle">Tambah Kelas</h3><p>Atur kelas, nominal, dan periode tahun ajaran</p></div>
+      <button class="m-close" onclick="closeModal('mdKelas')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="fg-row">
+        <div class="fg"><label>NAMA KELAS *</label><input class="fi" id="inNamaKelas" placeholder="Contoh: 7A, 8B, 9C"></div>
+        <div class="fg"><label>WALI KELAS</label><input class="fi" id="inWaliKelas" placeholder="Opsional"></div>
+      </div>
+      <div class="fg"><label>NOMINAL INFAK PER BULAN (Rp) *</label>
+        <input class="fi" type="number" id="inNominalKelas" placeholder="Contoh: 25000">
+        <div class="fi-hint">Nominal default untuk semua siswa di kelas ini</div>
+      </div>
+      <div class="fg"><label>TINGKAT KELAS</label>
+        <select class="fi" id="inTingkat" onchange="updatePeriodFields()">
+          <option value="1">Kelas 7 / Tahun Pertama (1 periode)</option>
+          <option value="2">Kelas 8 / Tahun Kedua (2 periode)</option>
+          <option value="3">Kelas 9 / Tahun Ketiga (3 periode)</option>
+        </select>
+        <div class="fi-hint">Menentukan jumlah periode pembayaran yang tersedia</div>
+      </div>
+
+      <hr class="f-divider">
+
+      <div class="period-cfg">
+        <div class="period-cfg-title">⚙️ KONFIGURASI PERIODE TAHUN AJARAN</div>
+        <div id="periodFields"></div>
+        <div style="font-size:10px;color:var(--slate-500);margin-top:8px">
+          Setiap periode = 1 tahun (12 bulan). Masukkan tahun ajaran untuk setiap periode.
+        </div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" onclick="closeModal('mdKelas')">Batal</button>
+      <button class="btn btn-blue" onclick="simpanKelas()">💾 Simpan Kelas</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL EDIT KELAS ═══ -->
+<div class="backdrop" id="mdEditKelas">
+  <div class="modal m-lg">
+    <div class="m-head">
+      <div><h3>Edit Kelas</h3><p>Ubah data kelas</p></div>
+      <button class="m-close" onclick="closeModal('mdEditKelas')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="fg-row">
+        <div class="fg"><label>NAMA KELAS *</label><input class="fi" id="editNamaKelas"></div>
+        <div class="fg"><label>WALI KELAS</label><input class="fi" id="editWaliKelas"></div>
+      </div>
+      <div class="fg"><label>NOMINAL INFAK PER BULAN (Rp) *</label>
+        <input class="fi" type="number" id="editNominalKelas">
+      </div>
+      <div class="fg"><label>TINGKAT KELAS</label>
+        <select class="fi" id="editTingkat" onchange="updateEditPeriodFields()">
+          <option value="1">Kelas 7 / Tahun Pertama (1 periode)</option>
+          <option value="2">Kelas 8 / Tahun Kedua (2 periode)</option>
+          <option value="3">Kelas 9 / Tahun Ketiga (3 periode)</option>
+        </select>
+      </div>
+      <hr class="f-divider">
+      <div class="period-cfg">
+        <div class="period-cfg-title">⚙️ KONFIGURASI PERIODE</div>
+        <div id="editPeriodFields"></div>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-danger btn-sm" onclick="hapusKelas()">🗑 Hapus</button>
+      <button class="btn btn-ghost" onclick="closeModal('mdEditKelas')">Batal</button>
+      <button class="btn btn-blue" onclick="simpanEditKelas()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL NOMINAL BULAN ═══ -->
+<div class="backdrop" id="mdNomBulan">
+  <div class="modal m-sm">
+    <div class="m-head">
+      <div><h3 id="mnbTitle">Nominal Infak</h3><p id="mnbSub"></p></div>
+      <button class="m-close" onclick="closeModal('mdNomBulan')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="fg"><label>JUMLAH BAYAR (Rp)</label>
+        <input class="fi" type="number" id="inNomBulan" min="0" placeholder="0">
+        <div class="fi-hint">Isi 0 atau kosong = belum bayar. Isi nominal = lunas.</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn btn-ghost btn-xs" id="btnDefaultNom" onclick="fillDefaultNom()"></button>
+        <button class="btn btn-ghost btn-xs" onclick="document.getElementById('inNomBulan').value=0">Rp 0 (belum)</button>
+      </div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" onclick="closeModal('mdNomBulan')">Batal</button>
+      <button class="btn btn-blue" onclick="simpanNomBulan()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL SETTINGS ═══ -->
+<div class="backdrop" id="mdSettings">
+  <div class="modal m-sm">
+    <div class="m-head">
+      <div><h3>Pengaturan</h3><p>Atur nama sekolah & tahun ajaran</p></div>
+      <button class="m-close" onclick="closeModal('mdSettings')">✕</button>
+    </div>
+    <div class="m-body">
+      <div class="fg"><label>NAMA SEKOLAH</label><input class="fi" id="inSchool" placeholder="Nama sekolah"></div>
+      <div class="fg"><label>TAHUN AJARAN AKTIF</label><input class="fi" id="inTahun" placeholder="Contoh: 2024/2025"></div>
+    </div>
+    <div class="m-foot">
+      <button class="btn btn-ghost" onclick="closeModal('mdSettings')">Batal</button>
+      <button class="btn btn-blue" onclick="simpanSettings()">💾 Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="ti" id="toastIc">✓</span><span id="toastMsg"></span></div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATABASE
+// ══════════════════════════════════════════════
+const DB_KEY = 'infakDB_v5';
+const BULAN = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+const BULAN_FULL = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const today = new Date();
+
+/*
+  STRUKTUR DATA:
+  Kelas: { id, nama, wali, nominal, tingkat (1/2/3), periodes: [{tahun, label}] }
+  Siswa: { id, nama, nis, kelasId, nominalKhusus,
+           periodes: [
+             { periodeIdx:0, bayar:[null*12] },  // periode 1
+             { periodeIdx:1, bayar:[null*12] },  // periode 2
+             { periodeIdx:2, bayar:[null*12] },  // periode 3
+           ]
+         }
+  bayar: null = belum, number = nominal terbayar
+*/
+
+function loadDB(){try{const r=localStorage.getItem(DB_KEY);return r?JSON.parse(r):null}catch{return null}}
+function saveDB(){try{localStorage.setItem(DB_KEY,JSON.stringify(db))}catch{}}
+
+function defaultDB(){
+  const now = today.getFullYear();
+  return {
+    settings:{ sekolah:'SMP Contoh', tahun:`${now}/${now+1}` },
+    kelas:[
+      {id:'k1',nama:'7A',wali:'Bu Sari',nominal:25000,tingkat:1,periodes:[{tahun:`${now}/${now+1}`,label:'Periode 1'}]},
+      {id:'k2',nama:'7B',wali:'Pak Budi',nominal:25000,tingkat:1,periodes:[{tahun:`${now}/${now+1}`,label:'Periode 1'}]},
+      {id:'k3',nama:'8A',wali:'Bu Dewi',nominal:30000,tingkat:2,periodes:[
+        {tahun:`${now-1}/${now}`,label:'Periode 1'},
+        {tahun:`${now}/${now+1}`,label:'Periode 2'},
+      ]},
+      {id:'k4',nama:'9A',wali:'Pak Rahmat',nominal:30000,tingkat:3,periodes:[
+        {tahun:`${now-2}/${now-1}`,label:'Periode 1'},
+        {tahun:`${now-1}/${now}`,label:'Periode 2'},
+        {tahun:`${now}/${now+1}`,label:'Periode 3'},
+      ]},
+    ],
+    siswa:[
+      {id:'s1',nama:'Aisyah Putri',nis:'2024001',kelasId:'k1',nominalKhusus:null,
+        periodes:[{periodeIdx:0,bayar:[25000,25000,25000,null,null,null,null,null,null,null,null,null]}]},
+      {id:'s2',nama:'Budi Santoso',nis:'2024002',kelasId:'k1',nominalKhusus:null,
+        periodes:[{periodeIdx:0,bayar:[25000,25000,null,null,null,null,null,null,null,null,null,null]}]},
+      {id:'s3',nama:'Citra Dewi',nis:'2024003',kelasId:'k2',nominalKhusus:null,
+        periodes:[{periodeIdx:0,bayar:[25000,25000,25000,25000,null,null,null,null,null,null,null,null]}]},
+      {id:'s4',nama:'Dimas Pratama',nis:'2023001',kelasId:'k3',nominalKhusus:null,
+        periodes:[
+          {periodeIdx:0,bayar:[30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000]},
+          {periodeIdx:1,bayar:[30000,30000,30000,null,null,null,null,null,null,null,null,null]},
+        ]},
+      {id:'s5',nama:'Eka Nurhaliza',nis:'2022001',kelasId:'k4',nominalKhusus:null,
+        periodes:[
+          {periodeIdx:0,bayar:[30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000]},
+          {periodeIdx:1,bayar:[30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000,30000]},
+          {periodeIdx:2,bayar:[30000,30000,30000,30000,null,null,null,null,null,null,null,null]},
+        ]},
+    ],
+    dbLog:[],
+  };
+}
+
+let db = loadDB() || defaultDB();
+if(!db.settings) db.settings={sekolah:'',tahun:''};
+if(!db.dbLog) db.dbLog=[];
+if(!loadDB()) saveDB();
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let currentPage = 'dashboard';
+let currentKelasId = null;
+let currentPeriodeIdx = 0; // for main table view
+let filterMode = 'belum';
+let editSiswaId = null;
+let editKelasId = null;
+let activeNomCell = null; // {siswaId, periodeIdx, bulanIdx}
+
+// ══════════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════════
+function genId(p){return p+Date.now()+Math.random().toString(36).slice(2,5)}
+function getKelas(id){return db.kelas.find(k=>k.id===id)}
+function nominalSiswa(s){return s.nominalKhusus||getKelas(s.kelasId)?.nominal||25000}
+function fmt(n){if(n===null||n===undefined||n===0)return n===0?'Rp 0':'—';return 'Rp '+Number(n).toLocaleString('id-ID')}
+function fmtShort(n){if(!n)return 'Rp 0';return n>=1000000?'Rp '+(n/1000000).toFixed(1)+'jt':'Rp '+n.toLocaleString('id-ID')}
+function getOrCreatePeriode(s, periodeIdx){
+  if(!s.periodes) s.periodes=[];
+  let p=s.periodes.find(x=>x.periodeIdx===periodeIdx);
+  if(!p){p={periodeIdx,bayar:new Array(12).fill(null)};s.periodes.push(p);}
+  return p;
+}
+function getBayarSiswa(s, periodeIdx){
+  const p=getOrCreatePeriode(s,periodeIdx);
+  return p.bayar;
+}
+function totalSiswaPeriode(s,periodeIdx){
+  return getBayarSiswa(s,periodeIdx).reduce((a,b)=>a+(b||0),0);
+}
+function totalSiswaAll(s){
+  return (s.periodes||[]).reduce((sum,p)=>sum+p.bayar.reduce((a,b)=>a+(b||0),0),0);
+}
+
+// ══════════════════════════════════════════════
+// PAGE SWITCH
+// ══════════════════════════════════════════════
+function switchPage(page, kelasId=null, periodeIdx=0){
+  currentPage=page;
+  if(kelasId!==null) currentKelasId=kelasId;
+  if(page==='semua') currentPeriodeIdx=periodeIdx;
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active','pink-active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const nb=document.getElementById('nb-'+page);
+  if(nb) nb.classList.add(page==='filter'?'pink-active':'active');
+
+  const titles={
+    dashboard:['Dashboard','Ringkasan infak semua kelas'],
+    semua:['Semua Siswa','Data pembayaran bulanan siswa'],
+    rekap:['Rekap Per Kelas','Ringkasan per kelas & periode'],
+    filter:['Cari Belum / Lunas','Filter berdasarkan rentang bulan'],
+    database:['Database','Download, upload & backup data'],
+  };
+  const [t,s]=titles[page]||['',''];
+  if(kelasId){
+    const k=getKelas(kelasId);
+    document.getElementById('pageTitle').textContent=`Kelas ${k?.nama||''}`;
+    document.getElementById('pageSubtitle').textContent=k?.wali?`Wali: ${k.wali}`:'';
+  } else {
+    document.getElementById('pageTitle').textContent=t;
+    document.getElementById('pageSubtitle').textContent=s;
+  }
+
+  renderAll(page);
+}
+
+// ══════════════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════════════
+function renderSidebar(){
+  document.getElementById('sbSchoolName').textContent=db.settings.sekolah||'— belum diatur —';
+  document.getElementById('sbTahun').textContent=db.settings.tahun||'—';
+
+  const opts=['<option value="">Semua</option>',...db.kelas.map(k=>`<option value="${k.id}">Kelas ${k.nama}</option>`)].join('');
+  ['filterKelas','fKelas'].forEach(id=>{const el=document.getElementById(id);if(el){const v=el.value;el.innerHTML=opts;el.value=v;}});
+  document.getElementById('inKelas').innerHTML=db.kelas.map(k=>`<option value="${k.id}">Kelas ${k.nama}</option>`).join('');
+
+  const container=document.getElementById('kelasSidebar');
+  container.innerHTML=db.kelas.map(k=>{
+    const cnt=db.siswa.filter(s=>s.kelasId===k.id).length;
+    const isActive=currentKelasId===k.id;
+    return `<div class="kelas-item ${isActive?'active':''}" onclick="goKelas('${k.id}')">
+      <span class="ki-dot"></span>
+      <span class="ki-name">Kelas ${k.nama}</span>
+      <span class="ki-cnt">${cnt}</span>
+      <span class="ki-edit" onclick="event.stopPropagation();openEditKelas('${k.id}')">✏️</span>
+    </div>`;
+  }).join('');
+}
+
+function goKelas(id){
+  currentKelasId=id;
+  document.querySelectorAll('.kelas-item').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.kelas-item').forEach(el=>{if(el.onclick?.toString().includes(`'${id}'`))el.classList.add('active');});
+  document.getElementById('filterKelas').value=id;
+  switchPage('semua',id,0);
+}
+
+// ══════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════
+function renderStats(){
+  const total=db.siswa.length;
+  const terkumpul=db.siswa.reduce((s,x)=>s+totalSiswaAll(x),0);
+  const potensi=db.siswa.reduce((s,x)=>{
+    const k=getKelas(x.kelasId);
+    if(!k) return s;
+    return s+nominalSiswa(x)*12*k.tingkat;
+  },0);
+  const bln=today.getMonth();
+  const sudah=db.siswa.filter(s=>{
+    const p=getOrCreatePeriode(s,Math.max(0,(getKelas(s.kelasId)?.tingkat||1)-1));
+    return p.bayar[bln]>0;
+  }).length;
+  const pct=potensi?Math.round(terkumpul/potensi*100):0;
+  const pctBln=total?Math.round(sudah/total*100):0;
+
+  document.getElementById('statsRow').innerHTML=`
+    <div class="stat-card sc-blue"><div class="stat-ic">🏫</div>
+      <div class="stat-lbl">Total Siswa</div><div class="stat-num">${total}</div>
+      <div class="stat-sub">${db.kelas.length} kelas aktif</div></div>
+    <div class="stat-card sc-pink"><div class="stat-ic">💰</div>
+      <div class="stat-lbl">Total Terkumpul</div><div class="stat-num" style="font-size:19px">${fmtShort(terkumpul)}</div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="width:${pct}%"></div></div>
+      <div class="stat-sub">${pct}% dari ${fmtShort(potensi)}</div></div>
+    <div class="stat-card sc-gold"><div class="stat-ic">📅</div>
+      <div class="stat-lbl">Bayar ${BULAN[bln]} Ini</div><div class="stat-num">${sudah} <span style="font-size:16px;color:var(--slate-400)">/ ${total}</span></div>
+      <div class="stat-bar"><div class="stat-bar-fill" style="background:var(--gold);width:${pctBln}%"></div></div>
+      <div class="stat-sub">${pctBln}% sudah bayar</div></div>
+    <div class="stat-card sc-em"><div class="stat-ic">⚠️</div>
+      <div class="stat-lbl">Belum ${BULAN[bln]}</div><div class="stat-num">${total-sudah}</div>
+      <div class="stat-sub">${fmt((total-sudah)*25000)} estimasi</div></div>`;
+}
+
+// ══════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════
+function renderDashboard(){
+  const grid=document.getElementById('dashRekap');
+  if(!db.kelas.length){grid.innerHTML='<p style="color:var(--slate-400);font-size:13px">Belum ada kelas. Tambah kelas untuk mulai.</p>';return;}
+  grid.innerHTML=db.kelas.map(k=>{
+    const siswa=db.siswa.filter(s=>s.kelasId===k.id);
+    const cnt=siswa.length;
+    const terkumpul=siswa.reduce((s,x)=>s+totalSiswaAll(x),0);
+    const potensi=cnt*k.nominal*12*k.tingkat;
+    const pct=potensi?Math.round(terkumpul/potensi*100):0;
+    const periodes=k.periodes||[];
+    const badgePeriodes=periodes.map((p,i)=>`<span class="period-badge pb-${i+1}">P${i+1}: ${p.tahun||p.label}</span>`).join('');
+    const lastP=k.tingkat-1;
+    const bulanCols=BULAN.map((_,i)=>{
+      const totalBln=siswa.reduce((s,x)=>s+(getBayarSiswa(x,lastP)[i]||0),0);
+      const maxBln=cnt*k.nominal;
+      const cls=totalBln===0?'empty':totalBln>=maxBln?'full':'partial';
+      return `<div class="rk-m ${cls}" title="${BULAN_FULL[i]}: ${fmt(totalBln)}">${BULAN[i].slice(0,1)}</div>`;
+    }).join('');
+    return `<div class="rekap-card anim" onclick="goKelas('${k.id}')" style="cursor:pointer">
+      <div class="rk-name">Kelas ${k.nama}</div>
+      <div class="rk-wali">${k.wali?'Wali: '+k.wali:''} · Nominal: ${fmt(k.nominal)}/bln</div>
+      <div style="margin-bottom:10px">${badgePeriodes}</div>
+      <div class="rk-row"><span class="rk-lbl">Siswa</span><span class="rk-val">${cnt}</span></div>
+      <div class="rk-row"><span class="rk-lbl">Terkumpul</span><span class="rk-val teal">${fmtShort(terkumpul)}</span></div>
+      <div class="rk-row"><span class="rk-lbl">Potensi (${k.tingkat} thn)</span><span class="rk-val">${fmtShort(potensi)}</span></div>
+      <div class="rk-bar"><div class="rk-fill" style="width:${pct}%"></div></div>
+      <div class="rk-pct">${pct}% — Periode aktif: ${periodes[lastP]?.tahun||'—'}</div>
+      <div class="rk-bulan">${bulanCols}</div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// SEMUA SISWA + PERIOD TABS
+// ══════════════════════════════════════════════
+function renderPeriodTabs(){
+  // Build period tabs based on current kelas filter
+  const kelasId=document.getElementById('filterKelas').value||currentKelasId;
+  const k=getKelas(kelasId);
+  const periodes=k?.periodes||[];
+  const maxTingkat=k?k.tingkat:Math.max(...db.kelas.map(x=>x.tingkat),1);
+
+  // Show up to maxTingkat periods
+  const tabs=document.getElementById('mainPeriodTabs');
+  const info=document.getElementById('mainPeriodInfo');
+  tabs.innerHTML='';
+  if(!k||periodes.length<=1){
+    tabs.innerHTML='<span class="ptab active" style="cursor:default">Periode 1</span>';
+    info.textContent=periodes[0]?.tahun||db.settings.tahun||'—';
+    currentPeriodeIdx=0;
+    return;
+  }
+  periodes.forEach((p,i)=>{
+    const btn=document.createElement('button');
+    btn.className='ptab'+(i===currentPeriodeIdx?' active':'');
+    btn.textContent=`P${i+1}`;
+    btn.onclick=()=>{currentPeriodeIdx=i;renderPeriodTabs();renderSemua();};
+    tabs.appendChild(btn);
+  });
+  info.textContent=periodes[currentPeriodeIdx]?.tahun||'—';
+}
+
+function getSiswaFiltered(){
+  const search=document.getElementById('searchInput').value.toLowerCase();
+  const kelasId=document.getElementById('filterKelas').value||currentKelasId;
+  const sort=document.getElementById('filterSort').value;
+  let list=[...db.siswa];
+  if(kelasId) list=list.filter(s=>s.kelasId===kelasId);
+  if(search) list=list.filter(s=>s.nama.toLowerCase().includes(search)||(s.nis||'').includes(search));
+  if(sort==='nama') list.sort((a,b)=>a.nama.localeCompare(b.nama));
+  else if(sort==='kelas') list.sort((a,b)=>(getKelas(a.kelasId)?.nama||'').localeCompare(getKelas(b.kelasId)?.nama||'')||a.nama.localeCompare(b.nama));
+  else if(sort==='total-d') list.sort((a,b)=>totalSiswaAll(b)-totalSiswaAll(a));
+  else if(sort==='total-a') list.sort((a,b)=>totalSiswaAll(a)-totalSiswaAll(b));
+  return list;
+}
+
+function renderSemua(){
+  renderSidebar();
+  renderPeriodTabs();
+  const list=getSiswaFiltered();
+  const tbody=document.getElementById('tableBody');
+  const empty=document.getElementById('emptyState');
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+
+  const kelasId=document.getElementById('filterKelas').value||currentKelasId;
+  const k=getKelas(kelasId);
+  const pIdx=currentPeriodeIdx;
+
+  tbody.innerHTML=list.map((s,idx)=>{
+    const sk=getKelas(s.kelasId);
+    const bayar=getBayarSiswa(s,pIdx);
+    const nom=nominalSiswa(s);
+    const totalP=bayar.reduce((a,b)=>a+(b||0),0);
+    const terbayar=bayar.filter(b=>b&&b>0).length;
+
+    const cells=bayar.map((b,i)=>{
+      const paid=b!==null&&b>0;
+      const isCustom=paid&&b!==nom;
+      return `<div class="mc ${paid?'paid':'unpaid'} ${isCustom?'custom':''}"
+        title="${BULAN_FULL[i]}: ${paid?fmt(b):'Belum bayar'} | Klik=toggle | Klik-kanan=nominal"
+        onclick="toggleBayar('${s.id}',${pIdx},${i})"
+        oncontextmenu="openNomBulan('${s.id}',${pIdx},${i});return false">
+        ${paid?`<span class="mc-check">✓</span>`:`<span class="mc-label">${BULAN[i].slice(0,1)}</span>`}
+      </div>`;
+    }).join('');
+
+    const periodesBadge=(s.periodes||[]).filter(p=>p.periodeIdx<(sk?.tingkat||1)).map(p=>{
+      const t=totalSiswaPeriode(s,p.periodeIdx);
+      return `<span class="period-badge pb-${p.periodeIdx+1}" title="Periode ${p.periodeIdx+1}: ${fmt(t)}">${p.periodeIdx+1}</span>`;
+    }).join('');
+
+    return `<tr>
+      <td style="color:var(--slate-400);font-size:11px">${idx+1}</td>
+      <td>
+        <div class="stu-nm">${s.nama} ${s.nominalKhusus?`<span style="font-size:10px;color:var(--pink)">*khusus</span>`:''}</div>
+        <div class="stu-sub">${s.nis?'NIS: '+s.nis+' · ':''}${periodesBadge}</div>
+      </td>
+      <td><span class="badge badge-kelas">${sk?.nama||'?'}</span></td>
+      <td><div class="months-wrap">${cells}</div></td>
+      <td style="text-align:right">
+        <div class="total-v">${fmt(totalP)}</div>
+        <div class="total-s">${terbayar}/12 bln · ${totalSiswaAll(s)>totalP?'Total: '+fmtShort(totalSiswaAll(s)):''}</div>
+      </td>
+      <td style="text-align:center">
+        <div style="display:flex;gap:2px;justify-content:center">
+          <button class="icon-btn" onclick="openModalSiswa('${s.id}')">✏️</button>
+          <button class="icon-btn del" onclick="hapusSiswa('${s.id}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const kelasInfo=k?`Kelas ${k.nama}`:'Semua Siswa';
+  document.getElementById('tableTitle').textContent=kelasInfo;
+}
+
+// ══════════════════════════════════════════════
+// TOGGLE & NOMINAL PER BULAN
+// ══════════════════════════════════════════════
+function toggleBayar(siswaId,periodeIdx,bulanIdx){
+  const s=db.siswa.find(x=>x.id===siswaId);
+  if(!s) return;
+  const p=getOrCreatePeriode(s,periodeIdx);
+  const nom=nominalSiswa(s);
+  if(p.bayar[bulanIdx]>0){p.bayar[bulanIdx]=null;showToast(`${BULAN[bulanIdx]} dibatalkan`,'warn');}
+  else{p.bayar[bulanIdx]=nom;showToast(`${BULAN[bulanIdx]} lunas — ${fmt(nom)}`,'success');}
+  saveDB();renderAll(currentPage);
+}
+
+function openNomBulan(siswaId,periodeIdx,bulanIdx){
+  activeNomCell={siswaId,periodeIdx,bulanIdx};
+  const s=db.siswa.find(x=>x.id===siswaId);
+  const p=getOrCreatePeriode(s,periodeIdx);
+  const nom=nominalSiswa(s);
+  const k=getKelas(s.kelasId);
+  document.getElementById('mnbTitle').textContent=`${BULAN_FULL[bulanIdx]} — Periode ${periodeIdx+1}`;
+  document.getElementById('mnbSub').textContent=`${s.nama} · Kelas ${k?.nama||'?'}`;
+  document.getElementById('inNomBulan').value=p.bayar[bulanIdx]||'';
+  document.getElementById('btnDefaultNom').textContent=`Standar: ${fmt(nom)}`;
+  openModal('mdNomBulan');
+}
+function fillDefaultNom(){
+  const s=db.siswa.find(x=>x.id===activeNomCell?.siswaId);
+  if(s) document.getElementById('inNomBulan').value=nominalSiswa(s);
+}
+function simpanNomBulan(){
+  const val=parseInt(document.getElementById('inNomBulan').value)||0;
+  const {siswaId,periodeIdx,bulanIdx}=activeNomCell;
+  const s=db.siswa.find(x=>x.id===siswaId);
+  getOrCreatePeriode(s,periodeIdx).bayar[bulanIdx]=val>0?val:null;
+  saveDB();closeModal('mdNomBulan');renderAll(currentPage);
+  showToast(val>0?`${BULAN[bulanIdx]} — ${fmt(val)}`:`${BULAN[bulanIdx]} belum bayar`,'success');
+}
+
+// ══════════════════════════════════════════════
+// TANDAI SEMUA BULAN INI
+// ══════════════════════════════════════════════
+function tandaiSemuaBulanIni(){
+  const bln=today.getMonth();
+  const kelasId=document.getElementById('filterKelas').value||currentKelasId;
+  const src=kelasId?db.siswa.filter(s=>s.kelasId===kelasId):db.siswa;
+  src.forEach(s=>{
+    const pIdx=currentPeriodeIdx;
+    const p=getOrCreatePeriode(s,pIdx);
+    p.bayar[bln]=nominalSiswa(s);
+  });
+  saveDB();renderAll(currentPage);
+  showToast(`✓ ${src.length} siswa ditandai lunas ${BULAN[bln]}`,'success');
+}
+
+// ══════════════════════════════════════════════
+// REKAP
+// ══════════════════════════════════════════════
+function renderRekap(){
+  const grid=document.getElementById('rekapGrid');
+  grid.innerHTML=db.kelas.map(k=>{
+    const siswa=db.siswa.filter(s=>s.kelasId===k.id);
+    const cnt=siswa.length;
+    const terkumpul=siswa.reduce((s,x)=>s+totalSiswaAll(x),0);
+    const potensi=cnt*k.nominal*12*k.tingkat;
+    const pct=potensi?Math.round(terkumpul/potensi*100):0;
+    const periodes=k.periodes||[];
+    const lastP=k.tingkat-1;
+    const bulanCols=BULAN.map((_,i)=>{
+      const t=siswa.reduce((s,x)=>s+(getBayarSiswa(x,lastP)[i]||0),0);
+      const m=cnt*k.nominal;
+      return `<div class="rk-m ${!t?'empty':t>=m?'full':'partial'}" title="${BULAN_FULL[i]}: ${fmt(t)}">${BULAN[i].slice(0,1)}</div>`;
+    }).join('');
+    return `<div class="rekap-card anim">
+      <div class="rk-name">Kelas ${k.nama}</div>
+      <div class="rk-wali">${k.wali||''} · Nominal ${fmt(k.nominal)}/bln</div>
+      <div style="margin-bottom:10px">${(periodes).map((p,i)=>`<span class="period-badge pb-${i+1}">P${i+1}: ${p.tahun||p.label}</span>`).join('')}</div>
+      <div class="rk-row"><span class="rk-lbl">Siswa</span><span class="rk-val">${cnt}</span></div>
+      <div class="rk-row"><span class="rk-lbl">Terkumpul</span><span class="rk-val teal">${fmtShort(terkumpul)}</span></div>
+      <div class="rk-row"><span class="rk-lbl">Potensi (${k.tingkat}×12 bln)</span><span class="rk-val">${fmtShort(potensi)}</span></div>
+      <div class="rk-bar"><div class="rk-fill" style="width:${pct}%"></div></div>
+      <div class="rk-pct">${pct}% terkumpul</div>
+      <div class="rk-bulan">${bulanCols}</div>
+    </div>`;
+  }).join('');
+
+  const tbody=document.getElementById('rekapBody');
+  tbody.innerHTML=db.kelas.flatMap(k=>{
+    const siswa=db.siswa.filter(s=>s.kelasId===k.id);
+    const cnt=siswa.length;
+    return (k.periodes||[]).map((p,i)=>{
+      const terkumpul=siswa.reduce((s,x)=>s+totalSiswaPeriode(x,i),0);
+      const potensi=cnt*k.nominal*12;
+      const pct=potensi?Math.round(terkumpul/potensi*100):0;
+      return `<tr class="${i===0?'':'rekap-period-row'}">
+        <td>${i===0?`<strong>Kelas ${k.nama}</strong>`:'↳'}</td>
+        <td><span class="period-badge pb-${i+1}">Periode ${i+1}</span></td>
+        <td>${p.tahun||p.label}</td>
+        <td>${i===0?cnt:'—'}</td>
+        <td>${fmt(k.nominal)}</td>
+        <td style="color:var(--blue);font-weight:600">${fmt(terkumpul)}</td>
+        <td>${fmt(potensi)}</td>
+        <td><strong>${pct}%</strong></td>
+      </tr>`;
+    });
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// FILTER PAGE
+// ══════════════════════════════════════════════
+function initFilterSelects(){
+  const bOpts=BULAN_FULL.map((b,i)=>`<option value="${i}">${b}</option>`).join('');
+  document.getElementById('fDari').innerHTML=bOpts;
+  document.getElementById('fSampai').innerHTML=bOpts;
+  document.getElementById('fDari').value=today.getMonth();
+  document.getElementById('fSampai').value=today.getMonth();
+}
+
+function setFMode(m){
+  filterMode=m;
+  document.querySelectorAll('#page-filter .tab-sm').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+m).classList.add('active');
+  renderFilter();
+}
+
+function renderFilter(){
+  renderSidebar();
+  const dari=parseInt(document.getElementById('fDari').value);
+  const sampai=parseInt(document.getElementById('fSampai').value);
+  const mDari=Math.min(dari,sampai),mSampai=Math.max(dari,sampai);
+  const kelasId=document.getElementById('fKelas').value;
+  const periodeIdx=parseInt(document.getElementById('fPeriode').value)-1;
+
+  let src=[...db.siswa];
+  if(kelasId) src=src.filter(s=>s.kelasId===kelasId);
+
+  const list=filterMode==='belum'
+    ?src.filter(s=>{const b=getBayarSiswa(s,periodeIdx);return b.slice(mDari,mSampai+1).some(x=>!x||x<=0);})
+    :src.filter(s=>{const b=getBayarSiswa(s,periodeIdx);return b.slice(mDari,mSampai+1).every(x=>x&&x>0);});
+
+  document.getElementById('filterTitle').textContent=filterMode==='belum'?'Belum Bayar (Rentang)':'Sudah Lunas (Rentang)';
+  document.getElementById('filterCount').textContent=`${list.length} siswa`;
+  const tbody=document.getElementById('filterBody');
+  const empty=document.getElementById('filterEmpty');
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';
+    document.getElementById('filterEmptyMsg').textContent=filterMode==='belum'?'Semua sudah lunas!':'Belum ada yang lunas pada rentang ini';return;}
+  empty.style.display='none';
+
+  tbody.innerHTML=list.map((s,idx)=>{
+    const k=getKelas(s.kelasId);
+    const bayar=getBayarSiswa(s,periodeIdx);
+    const cells=bayar.slice(mDari,mSampai+1).map((b,i)=>{
+      const paid=b&&b>0;
+      return `<div class="mc ${paid?'paid':'unpaid'}" style="width:26px;height:26px" title="${BULAN_FULL[i+mDari]}: ${paid?fmt(b):'Belum'}">
+        ${paid?'✓':`<span class="mc-label">${BULAN[i+mDari].slice(0,1)}</span>`}
+      </div>`;
+    }).join('');
+    const total=bayar.slice(mDari,mSampai+1).reduce((a,b)=>a+(b||0),0);
+    return `<tr><td style="color:var(--slate-400);font-size:11px">${idx+1}</td>
+      <td><div class="stu-nm">${s.nama}</div>${s.nis?`<div class="stu-sub">NIS: ${s.nis}</div>`:''}</td>
+      <td><span class="badge badge-kelas">${k?.nama||'?'}</span></td>
+      <td><div class="months-wrap">${cells}</div></td>
+      <td style="text-align:right;font-weight:600;color:var(--blue)">${fmt(total)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// DATABASE PAGE
+// ══════════════════════════════════════════════
+function renderDatabase(){
+  const total=db.siswa.length;
+  const terkumpul=db.siswa.reduce((s,x)=>s+totalSiswaAll(x),0);
+  document.getElementById('dbStats').innerHTML=`
+    <div class="db-stat"><div class="db-stat-val">${db.kelas.length}</div><div class="db-stat-lbl">Kelas</div></div>
+    <div class="db-stat"><div class="db-stat-val">${total}</div><div class="db-stat-lbl">Siswa</div></div>
+    <div class="db-stat" style="--blue:var(--pink)"><div class="db-stat-val" style="color:var(--pink)">${fmtShort(terkumpul)}</div><div class="db-stat-lbl">Terkumpul</div></div>`;
+  const log=document.getElementById('dbLog');
+  if(!db.dbLog.length){log.innerHTML='<p style="font-size:12px;color:var(--slate-400)">Belum ada aktivitas</p>';return;}
+  log.innerHTML=db.dbLog.slice().reverse().slice(0,20).map(l=>`
+    <div class="db-log-item">
+      <div class="db-log-ic ${l.type}">${l.type==='d'?'💾':'📤'}</div>
+      <div class="db-log-text">${l.msg}</div>
+      <div class="db-log-time">${l.time}</div>
+    </div>`).join('');
+}
+
+function addLog(type,msg){
+  if(!db.dbLog) db.dbLog=[];
+  db.dbLog.push({type,msg,time:new Date().toLocaleString('id-ID')});
+  if(db.dbLog.length>50) db.dbLog.shift();
+}
+
+function downloadDB(){
+  const json=JSON.stringify(db,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download=`infak_backup_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  addLog('d',`Database diunduh (${db.siswa.length} siswa, ${db.kelas.length} kelas)`);
+  saveDB();renderDatabase();
+  showToast('Database berhasil diunduh','success');
+}
+
+function triggerUpload(){document.getElementById('dbFileInput').click()}
+function uploadDB(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data.kelas||!data.siswa) throw new Error('Format tidak valid');
+      if(!confirm(`Upload database?\nIni akan menggantikan semua data saat ini.\n(${data.siswa.length} siswa, ${data.kelas.length} kelas)`)) return;
+      db=data;
+      if(!db.dbLog) db.dbLog=[];
+      addLog('u',`Database dipulihkan dari ${file.name}`);
+      saveDB();renderAll('database');
+      showToast(`✓ Database dipulihkan (${db.siswa.length} siswa)`,'success');
+    }catch(err){showToast('Format file tidak valid','error');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ══════════════════════════════════════════════
+// MODAL SISWA
+// ══════════════════════════════════════════════
+function openModalSiswa(id=null){
+  editSiswaId=id;
+  renderSidebar();
+  if(id){
+    const s=db.siswa.find(x=>x.id===id);
+    document.getElementById('mdSiswaTitle').textContent='Edit Siswa';
+    document.getElementById('mdSiswaDesc').textContent='Ubah data siswa';
+    document.getElementById('inNama').value=s.nama;
+    document.getElementById('inNIS').value=s.nis||'';
+    document.getElementById('inKelas').value=s.kelasId;
+    document.getElementById('inNominalKhusus').value=s.nominalKhusus||'';
+  } else {
+    document.getElementById('mdSiswaTitle').textContent='Tambah Siswa';
+    document.getElementById('mdSiswaDesc').textContent='Isi data siswa baru';
+    document.getElementById('inNama').value='';
+    document.getElementById('inNIS').value='';
+    document.getElementById('inNominalKhusus').value='';
+    const kId=document.getElementById('filterKelas').value||currentKelasId;
+    if(kId) document.getElementById('inKelas').value=kId;
+  }
+  openModal('mdSiswa');
+}
+
+function simpanSiswa(){
+  const nama=document.getElementById('inNama').value.trim();
+  const nis=document.getElementById('inNIS').value.trim();
+  const kelasId=document.getElementById('inKelas').value;
+  const nk=parseInt(document.getElementById('inNominalKhusus').value)||null;
+  if(!nama){showToast('Nama wajib diisi','error');return;}
+  if(!kelasId){showToast('Pilih kelas','error');return;}
+  const k=getKelas(kelasId);
+  if(editSiswaId){
+    const s=db.siswa.find(x=>x.id===editSiswaId);
+    Object.assign(s,{nama,nis,kelasId,nominalKhusus:nk});
+  } else {
+    const periodes=Array.from({length:k?.tingkat||1},(_,i)=>({periodeIdx:i,bayar:new Array(12).fill(null)}));
+    db.siswa.push({id:genId('s'),nama,nis,kelasId,nominalKhusus:nk,periodes});
+  }
+  saveDB();closeModal('mdSiswa');renderAll(currentPage);
+  showToast(editSiswaId?'Siswa diperbarui':'Siswa ditambahkan','success');
+}
+
+function hapusSiswa(id){
+  const s=db.siswa.find(x=>x.id===id);
+  if(!confirm(`Hapus siswa "${s.nama}"?`)) return;
+  db.siswa=db.siswa.filter(x=>x.id!==id);
+  saveDB();renderAll(currentPage);
+  showToast('Siswa dihapus','warn');
+}
+
+// ══════════════════════════════════════════════
+// MODAL KELAS
+// ══════════════════════════════════════════════
+function buildPeriodFields(container, tingkat, periodes=[]){
+  container.innerHTML='';
+  for(let i=0;i<tingkat;i++){
+    const p=periodes[i]||{};
+    const row=document.createElement('div');
+    row.className='period-row';
+    row.innerHTML=`<label style="color:var(--blue);font-weight:600">P${i+1}</label>
+      <div>
+        <div style="font-size:10px;color:var(--slate-500);margin-bottom:3px">Tahun Ajaran</div>
+        <input class="fi" id="pTahun${i}" placeholder="Contoh: 2024/2025" value="${p.tahun||p.label||''}">
+      </div>
+      <div>
+        <div style="font-size:10px;color:var(--slate-500);margin-bottom:3px">Label</div>
+        <input class="fi" id="pLabel${i}" placeholder="Contoh: Periode 1" value="${p.label||'Periode '+(i+1)}">
+      </div>`;
+    container.appendChild(row);
+  }
+}
+function updatePeriodFields(){buildPeriodFields(document.getElementById('periodFields'),parseInt(document.getElementById('inTingkat').value)||1);}
+function updateEditPeriodFields(){
+  const t=parseInt(document.getElementById('editTingkat').value)||1;
+  const k=getKelas(editKelasId);
+  buildPeriodFields(document.getElementById('editPeriodFields'),t,k?.periodes||[]);
+}
+function getPeriodeValues(tingkat){
+  return Array.from({length:tingkat},(_,i)=>({tahun:document.getElementById(`pTahun${i}`)?.value||'',label:document.getElementById(`pLabel${i}`)?.value||`Periode ${i+1}`}));
+}
+
+function simpanKelas(){
+  const nama=document.getElementById('inNamaKelas').value.trim();
+  const wali=document.getElementById('inWaliKelas').value.trim();
+  const nominal=parseInt(document.getElementById('inNominalKelas').value)||0;
+  const tingkat=parseInt(document.getElementById('inTingkat').value)||1;
+  if(!nama){showToast('Nama kelas wajib diisi','error');return;}
+  if(!nominal){showToast('Nominal wajib diisi','error');return;}
+  if(db.kelas.find(k=>k.nama.toLowerCase()===nama.toLowerCase())){showToast('Kelas sudah ada','error');return;}
+  const periodes=getPeriodeValues(tingkat);
+  db.kelas.push({id:genId('k'),nama,wali,nominal,tingkat,periodes});
+  saveDB();closeModal('mdKelas');renderAll(currentPage);
+  showToast(`Kelas ${nama} ditambahkan`,'success');
+}
+
+function openEditKelas(id){
+  editKelasId=id;
+  const k=getKelas(id);
+  document.getElementById('editNamaKelas').value=k.nama;
+  document.getElementById('editWaliKelas').value=k.wali||'';
+  document.getElementById('editNominalKelas').value=k.nominal||'';
+  document.getElementById('editTingkat').value=k.tingkat||1;
+  buildPeriodFields(document.getElementById('editPeriodFields'),k.tingkat||1,k.periodes||[]);
+  openModal('mdEditKelas');
+}
+function simpanEditKelas(){
+  const nama=document.getElementById('editNamaKelas').value.trim();
+  const wali=document.getElementById('editWaliKelas').value.trim();
+  const nominal=parseInt(document.getElementById('editNominalKelas').value)||0;
+  const tingkat=parseInt(document.getElementById('editTingkat').value)||1;
+  if(!nama){showToast('Nama wajib diisi','error');return;}
+  const k=getKelas(editKelasId);
+  const periodes=Array.from({length:tingkat},(_,i)=>{
+    const tahun=document.getElementById(`pTahun${i}`)?.value||k.periodes?.[i]?.tahun||'';
+    const label=document.getElementById(`pLabel${i}`)?.value||`Periode ${i+1}`;
+    return {tahun,label};
+  });
+  Object.assign(k,{nama,wali,nominal,tingkat,periodes});
+  // Update siswa di kelas ini - ensure periodes count
+  db.siswa.filter(s=>s.kelasId===editKelasId).forEach(s=>{
+    for(let i=0;i<tingkat;i++) getOrCreatePeriode(s,i);
+  });
+  saveDB();closeModal('mdEditKelas');renderAll(currentPage);
+  showToast(`Kelas ${nama} diperbarui`,'success');
+}
+function hapusKelas(){
+  const k=getKelas(editKelasId);
+  if(!confirm(`Hapus kelas ${k.nama}?`)) return;
+  db.kelas=db.kelas.filter(x=>x.id!==editKelasId);
+  if(currentKelasId===editKelasId) currentKelasId=null;
+  saveDB();closeModal('mdEditKelas');renderAll(currentPage);
+  showToast(`Kelas ${k.nama} dihapus`,'warn');
+}
+
+// ══════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════
+function simpanSettings(){
+  db.settings.sekolah=document.getElementById('inSchool').value.trim();
+  db.settings.tahun=document.getElementById('inTahun').value.trim();
+  saveDB();closeModal('mdSettings');renderSidebar();
+  showToast('Pengaturan disimpan','success');
+}
+
+// ══════════════════════════════════════════════
+// EXCEL
+// ══════════════════════════════════════════════
+function downloadExcel(){
+  const wb=XLSX.utils.book_new();
+  const hdr=['No','Nama','NIS','Kelas','Wali','Nominal','Nominal Khusus','Periode'];
+  const hdrBulan=BULAN_FULL.map(b=>b+' (P1)');
+  const hdrAll=[...hdr,...hdrBulan,'Total P1','Total Semua'];
+
+  const rows=db.siswa.map((s,i)=>{
+    const k=getKelas(s.kelasId);
+    const bayar=getBayarSiswa(s,0);
+    const total0=bayar.reduce((a,b)=>a+(b||0),0);
+    return [i+1,s.nama,s.nis||'',k?.nama||'',k?.wali||'',k?.nominal||'',s.nominalKhusus||'',k?.tingkat||1,
+      ...bayar.map(b=>b||0), total0, totalSiswaAll(s)];
+  });
+  const ws=XLSX.utils.aoa_to_sheet([hdrAll,...rows]);
+  XLSX.utils.book_append_sheet(wb,ws,'Data Siswa');
+
+  // Per kelas sheets
+  db.kelas.forEach(k=>{
+    const siswa=db.siswa.filter(s=>s.kelasId===k.id);
+    const sheetRows=siswa.map((s,i)=>{
+      const bayar=getBayarSiswa(s,k.tingkat-1);
+      return [i+1,s.nama,s.nis||'',...bayar.map(b=>b||0),bayar.reduce((a,b)=>a+(b||0),0)];
+    });
+    const sh=[['No','Nama','NIS',...BULAN_FULL,'Total'],...sheetRows];
+    const ws2=XLSX.utils.aoa_to_sheet(sh);
+    XLSX.utils.book_append_sheet(wb,ws2,`Kelas ${k.nama}`.slice(0,31));
+  });
+
+  XLSX.writeFile(wb,`Laporan_Infak_${db.settings.tahun||today.getFullYear()}.xlsx`);
+  showToast('Excel berhasil diunduh','success');
+}
+
+function downloadExcelRekap(){
+  const wb=XLSX.utils.book_new();
+  const h=['Kelas','Periode','Tahun','Siswa','Nominal','Terkumpul','Potensi','%'];
+  const rows=db.kelas.flatMap(k=>{
+    const siswa=db.siswa.filter(s=>s.kelasId===k.id);
+    return (k.periodes||[]).map((p,i)=>{
+      const terkumpul=siswa.reduce((s,x)=>s+totalSiswaPeriode(x,i),0);
+      const potensi=siswa.length*k.nominal*12;
+      return [k.nama,`Periode ${i+1}`,p.tahun||p.label,i===0?siswa.length:'',k.nominal,terkumpul,potensi,potensi?Math.round(terkumpul/potensi*100)+'%':''];
+    });
+  });
+  const ws=XLSX.utils.aoa_to_sheet([h,...rows]);
+  XLSX.utils.book_append_sheet(wb,ws,'Rekap Kelas');
+  XLSX.writeFile(wb,`Rekap_Infak_${today.getFullYear()}.xlsx`);
+  showToast('Rekap Excel diunduh','success');
+}
+
+function downloadExcelFilter(){
+  const dari=parseInt(document.getElementById('fDari').value);
+  const sampai=parseInt(document.getElementById('fSampai').value);
+  const mDari=Math.min(dari,sampai),mSampai=Math.max(dari,sampai);
+  const kelasId=document.getElementById('fKelas').value;
+  const periodeIdx=parseInt(document.getElementById('fPeriode').value)-1;
+  let src=[...db.siswa];
+  if(kelasId) src=src.filter(s=>s.kelasId===kelasId);
+  const list=filterMode==='belum'
+    ?src.filter(s=>getBayarSiswa(s,periodeIdx).slice(mDari,mSampai+1).some(x=>!x||x<=0))
+    :src.filter(s=>getBayarSiswa(s,periodeIdx).slice(mDari,mSampai+1).every(x=>x&&x>0));
+  const bulanRange=BULAN_FULL.slice(mDari,mSampai+1);
+  const h=['No','Nama','NIS','Kelas',...bulanRange,'Total Rentang'];
+  const rows=list.map((s,i)=>{
+    const k=getKelas(s.kelasId);
+    const range=getBayarSiswa(s,periodeIdx).slice(mDari,mSampai+1);
+    return [i+1,s.nama,s.nis||'',k?.nama||'',...range.map(b=>b||0),range.reduce((a,b)=>a+(b||0),0)];
+  });
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet([h,...rows]);
+  XLSX.utils.book_append_sheet(wb,ws,filterMode==='belum'?'Belum Bayar':'Lunas');
+  XLSX.writeFile(wb,`Infak_${filterMode==='belum'?'Belum':'Lunas'}_${BULAN[mDari]}-${BULAN[mSampai]}.xlsx`);
+  showToast('Excel filter diunduh','success');
+}
+
+// ══════════════════════════════════════════════
+// MODAL HELPERS
+// ══════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.backdrop').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el) el.classList.remove('open')});
+});
+
+// ══════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════
+function onSearch(){if(currentPage==='semua') renderSemua();}
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+let toastTmr;
+function showToast(msg,type='success'){
+  const icons={success:'✓',error:'✕',warn:'⚡'};
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  document.getElementById('toastIc').textContent=icons[type]||'✓';
+  t.className='toast '+type+' show';
+  clearTimeout(toastTmr);
+  toastTmr=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════════════════════
+// RENDER ALL
+// ══════════════════════════════════════════════
+function renderAll(page){
+  renderSidebar();
+  renderStats();
+  if(page==='dashboard'||!page) renderDashboard();
+  if(page==='semua') renderSemua();
+  if(page==='rekap') renderRekap();
+  if(page==='filter') renderFilter();
+  if(page==='database') renderDatabase();
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+// Period fields init
+updatePeriodFields();
+initFilterSelects();
+
+// Settings button in school name
+document.getElementById('sbSchoolName').style.cursor='pointer';
+document.getElementById('sbSchoolName').title='Klik untuk ubah pengaturan';
+document.getElementById('sbSchoolName').onclick=()=>{
+  document.getElementById('inSchool').value=db.settings.sekolah||'';
+  document.getElementById('inTahun').value=db.settings.tahun||'';
+  openModal('mdSettings');
+};
+
+renderAll('dashboard');
+</script>
+</body>
+</html>
